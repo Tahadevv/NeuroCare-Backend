@@ -1,233 +1,315 @@
-# Mental Health Analysis API - User Guide
+# NeuroCare Backend
 
-## Introduction
+A comprehensive mental health analysis API that provides text, audio, and video analysis for mental well-being assessment.
 
-Welcome to the Mental Health Analysis API! This guide will help you understand how to use our API to analyze mental health through text, audio, and video inputs. Our API provides personalized insights and recommendations to help you better understand and manage your mental well-being.
+## Features
 
-## Getting Started
+- **Text Analysis**: Analyze journal entries and thoughts for sentiment, emotions, and mental health indicators
+- **Audio Analysis**: Process voice recordings for emotional state and speech patterns
+- **Video Analysis**: Analyze facial expressions and voice for comprehensive emotional assessment
+- **Trend Analysis**: Track emotional and mental health trends over time
+- **Personalized Interventions**: Generate customized mental health recommendations
+- **Real-time Processing**: Fast and efficient analysis of user inputs
+- **Secure Authentication**: OAuth2 with JWT token-based authentication
+- **Scalable Architecture**: Built with FastAPI and PostgreSQL
 
-### 1. Create an Account
+## Tech Stack
 
-First, you'll need to create an account to use the API:
+- **Backend**: FastAPI, Python 3.9+
+- **Database**: PostgreSQL
+- **Cache**: Redis
+- **ML Models**: Transformers, PyTorch
+- **Storage**: AWS S3
+- **Deployment**: Docker, Kubernetes (optional)
 
+## Prerequisites
+
+- Python 3.9 or higher
+- PostgreSQL 13 or higher
+- Redis 6 or higher
+- FFmpeg
+- Git
+
+## Installation
+
+1. **Clone the repository**
 ```bash
-# Sign up
-curl -X POST "https://api.example.com/signup" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "your.email@example.com",
-    "full_name": "Your Name",
-    "password": "your_secure_password"
-  }'
+git clone https://github.com/Tahadevv/NeuroCare-Backend.git
+cd NeuroCare-Backend
 ```
 
-### 2. Login and Get Access Token
-
-After signing up, you'll need to login to get your access token:
-
+2. **Create and activate virtual environment**
 ```bash
-# Login
-curl -X POST "https://api.example.com/login" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "your.email@example.com",
-    "password": "your_secure_password"
-  }'
+# Windows
+python -m venv venv
+venv\Scripts\activate
+
+# Linux/Mac
+python3 -m venv venv
+source venv/bin/activate
 ```
 
-The response will include your access token. Use this token in all subsequent API requests.
+3. **Install dependencies**
+```bash
+pip install -r requirements.txt
+```
 
-## Using the API
+4. **Set up environment variables**
+Create a `.env` file in the root directory with:
+```env
+DATABASE_URL=postgresql://postgres:password@localhost:5432/mental_health_db
+SECRET_KEY=your-secret-key
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+HUGGINGFACE_API_KEY=your-huggingface-api-key
+```
+
+5. **Initialize the database**
+```bash
+# Create database
+createdb mental_health_db
+
+# Run migrations
+alembic upgrade head
+```
+
+6. **Start the server**
+```bash
+uvicorn main:app --reload
+```
+
+## API Endpoints
+
+### Authentication
+
+#### Sign Up
+- **URL**: `/signup`
+- **Method**: `POST`
+- **Headers**: 
+  - `Content-Type: application/json`
+- **Body**:
+```json
+{
+    "email": "user@example.com",
+    "full_name": "John Doe",
+    "password": "securepassword123"
+}
+```
+
+#### Login
+- **URL**: `/login`
+- **Method**: `POST`
+- **Headers**: 
+  - `Content-Type: application/json`
+- **Body**:
+```json
+{
+    "email": "user@example.com",
+    "password": "securepassword123"
+}
+```
 
 ### Text Analysis
 
-Analyze your thoughts and feelings through text:
-
-```bash
-# Analyze text
-curl -X POST "https://api.example.com/mental-health/analyze/text" \
-  -H "Authorization: Bearer your_access_token" \
-  -H "Content-Type: application/json" \
-  -d '{
+#### Analyze Text
+- **URL**: `/mental-health/analyze/text`
+- **Method**: `POST`
+- **Headers**: 
+  - `Authorization: Bearer <access_token>`
+  - `Content-Type: application/json`
+- **Body**:
+```json
+{
     "content": "I've been feeling stressed at work lately. The deadlines are piling up and I'm having trouble sleeping.",
     "context": "Evening reflection"
-  }'
+}
 ```
-
-The response will include:
-- Sentiment analysis
-- Emotional state
-- Key themes
-- Personalized recommendations
-- Follow-up questions
 
 ### Audio Analysis
 
-Analyze your emotional state through voice recordings:
-
-```bash
-# Analyze audio
-curl -X POST "https://api.example.com/mental-health/analyze/audio" \
-  -H "Authorization: Bearer your_access_token" \
-  -F "audio=@your_recording.wav"
-```
-
-The response will include:
-- Voice analysis
-- Emotional state
-- Speech patterns
-- Stress indicators
-- Personalized recommendations
+#### Analyze Audio
+- **URL**: `/mental-health/analyze/audio`
+- **Method**: `POST`
+- **Headers**: 
+  - `Authorization: Bearer <access_token>`
+- **Body**: 
+  - `audio`: (binary) WAV file
+  - `context`: (optional) string
 
 ### Video Analysis
 
-Analyze your emotional state through video:
+#### Analyze Video
+- **URL**: `/mental-health/analyze/video`
+- **Method**: `POST`
+- **Headers**: 
+  - `Authorization: Bearer <access_token>`
+- **Body**: 
+  - `video`: (binary) MP4 file
+  - `context`: (optional) string
 
-```bash
-# Analyze video
-curl -X POST "https://api.example.com/mental-health/analyze/video" \
-  -H "Authorization: Bearer your_access_token" \
-  -F "video=@your_video.mp4"
-```
+### Trend Analysis
 
-The response will include:
-- Facial expression analysis
-- Voice analysis
-- Overall emotional state
-- Personalized recommendations
+#### Get Emotion Trends
+- **URL**: `/mental-health/trends/emotions/{days}`
+- **Method**: `GET`
+- **Headers**: 
+  - `Authorization: Bearer <access_token>`
+- **Parameters**:
+  - `days`: number of days (1-365)
 
-### View Your Trends
+#### Get Mental Health Trends
+- **URL**: `/mental-health/trends/mental-health/{days}`
+- **Method**: `GET`
+- **Headers**: 
+  - `Authorization: Bearer <access_token>`
+- **Parameters**:
+  - `days`: number of days (1-365)
 
-Track your mental health over time:
+### User Profile
 
-```bash
-# Get emotion trends
-curl -X GET "https://api.example.com/mental-health/trends/emotions/30" \
-  -H "Authorization: Bearer your_access_token"
-
-# Get mental health trends
-curl -X GET "https://api.example.com/mental-health/trends/mental-health/30" \
-  -H "Authorization: Bearer your_access_token"
-```
-
-## Understanding the Results
-
-### Text Analysis Results
-
+#### Create Profile
+- **URL**: `/user/profile`
+- **Method**: `POST`
+- **Headers**: 
+  - `Authorization: Bearer <access_token>`
+  - `Content-Type: application/json`
+- **Body**:
 ```json
 {
-  "sentiment_analysis": {
-    "sentiment": "NEGATIVE",
-    "score": 0.85,
-    "emotions": {
-      "stress": 0.8,
-      "anxiety": 0.6
-    }
-  },
-  "recommendations": [
-    "Practice deep breathing exercises",
-    "Try time management techniques"
-  ],
-  "follow_up_questions": [
-    "What specific work tasks are causing the most stress?",
-    "How has your sleep been affected?"
-  ]
+    "name": "John Doe",
+    "age": 30,
+    "gender": "Male",
+    "sleep_hours_actual": 7.5,
+    "sleep_hours_target": 8.0,
+    "goals": [
+        "Reduce Stress & Anxiety",
+        "Improve Sleep Quality"
+    ]
 }
 ```
 
-### Audio Analysis Results
+#### Get Profile
+- **URL**: `/user/profile`
+- **Method**: `GET`
+- **Headers**: 
+  - `Authorization: Bearer <access_token>`
 
+## Example Responses
+
+### Text Analysis Response
 ```json
 {
-  "emotion_analysis": {
-    "dominant_emotion": "stressed",
-    "confidence": 0.82,
-    "voice_characteristics": {
-      "pitch": "higher than normal",
-      "speech_rate": "faster than normal"
-    }
-  },
-  "recommendations": [
-    "Try progressive muscle relaxation",
-    "Practice mindfulness meditation"
-  ]
+    "analysis_id": 1,
+    "timestamp": "2024-03-15T10:30:00Z",
+    "sentiment_analysis": {
+        "sentiment": "NEGATIVE",
+        "score": 0.85,
+        "emotions": {
+            "stress": 0.8,
+            "anxiety": 0.6
+        }
+    },
+    "recommendations": [
+        "Practice deep breathing exercises",
+        "Try time management techniques"
+    ]
 }
 ```
 
-### Video Analysis Results
-
+### Audio Analysis Response
 ```json
 {
-  "facial_analysis": {
-    "emotions": {
-      "stress": 0.7,
-      "tension": 0.6
-    }
-  },
-  "recommendations": [
-    "Take regular breaks during work",
-    "Practice facial relaxation exercises"
-  ]
+    "session_id": "uuid-string",
+    "timestamp": "2024-03-15T10:30:00Z",
+    "emotion_analysis": {
+        "dominant_emotion": "stressed",
+        "confidence": 0.82,
+        "voice_characteristics": {
+            "pitch": "higher than normal",
+            "speech_rate": "faster than normal"
+        }
+    },
+    "recommendations": [
+        "Try progressive muscle relaxation",
+        "Practice mindfulness meditation"
+    ]
 }
 ```
 
-## Best Practices
+### Video Analysis Response
+```json
+{
+    "facial_analysis": {
+        "emotions": {
+            "stress": 0.7,
+            "tension": 0.6
+        }
+    },
+    "recommendations": [
+        "Take regular breaks during work",
+        "Practice facial relaxation exercises"
+    ]
+}
+```
 
-1. **Regular Analysis**
-   - Perform text analysis daily
-   - Record audio weekly
-   - Video analysis monthly
+## Error Responses
 
-2. **Privacy**
-   - Your data is encrypted and secure
-   - You can delete your data at any time
-   - We never share your data with third parties
+### Authentication Error
+```json
+{
+    "detail": "Invalid credentials",
+    "code": "AUTH_ERROR"
+}
+```
 
-3. **Getting the Best Results**
-   - Be honest in your text entries
-   - Record in a quiet environment
-   - Ensure good lighting for video analysis
-   - Use consistent recording times
+### Validation Error
+```json
+{
+    "detail": [
+        {
+            "loc": ["body", "email"],
+            "msg": "Invalid email format",
+            "type": "value_error"
+        }
+    ]
+}
+```
 
-## Troubleshooting
-
-### Common Issues
-
-1. **Authentication Errors**
-   - Check your access token
-   - Ensure token hasn't expired
-   - Verify your credentials
-
-2. **File Upload Issues**
-   - Check file size (max 10MB)
-   - Verify file format
-   - Ensure stable internet connection
-
-3. **Analysis Errors**
-   - Check input quality
-   - Ensure sufficient content
-   - Try again later
+### File Upload Error
+```json
+{
+    "detail": "File size exceeds 10MB limit",
+    "code": "FILE_TOO_LARGE"
+}
+```
 
 ## Support
 
-If you need help:
-1. Check our [FAQ](https://example.com/faq)
-2. Email support@example.com
-3. Visit our [documentation](https://example.com/docs)
+For support, email support@example.com or open an issue in the GitHub repository.
 
-## Privacy and Security
+## License
 
-- All data is encrypted
-- Your privacy is our priority
-- You control your data
-- Regular security audits
-- GDPR compliant
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Feedback
+## Monitoring
 
-We value your feedback! Help us improve by:
-1. Reporting issues
-2. Suggesting features
-3. Sharing your experience
+The application includes:
+- Prometheus metrics endpoint
+- Sentry error tracking
+- Structured logging
+- Health check endpoint
 
-Email: feedback@example.com 
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## Acknowledgments
+
+- FastAPI team for the amazing framework
+- Hugging Face for the transformer models
+- OpenCV for computer vision capabilities
+- All contributors and maintainers 
