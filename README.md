@@ -2,6 +2,27 @@
 
 A comprehensive mental health analysis API that provides text, audio, and video analysis for mental well-being assessment.
 
+## Project Structure
+
+```
+NeuroCare-Backend/
+├── .env                    # Environment variables
+├── main.py                 # Main FastAPI application
+├── models.py               # Database models
+├── schemas.py              # Pydantic schemas
+├── database.py             # Database configuration
+├── security.py             # Security utilities
+├── auth_utils.py           # Authentication utilities
+├── email_utils.py          # Email utilities
+├── emotion_utils.py        # Emotion analysis utilities
+├── text_analysis_utils.py  # Text analysis utilities
+├── audio_analysis_utils.py # Audio analysis utilities
+├── video_emotion_utils.py  # Video analysis utilities
+├── realtime_utils.py       # Real-time processing utilities
+├── requirements.txt        # Python dependencies
+└── README.md               # Project documentation
+```
+
 ## Features
 
 - **Text Analysis**: Analyze journal entries and thoughts for sentiment, emotions, and mental health indicators
@@ -11,24 +32,24 @@ A comprehensive mental health analysis API that provides text, audio, and video 
 - **Personalized Interventions**: Generate customized mental health recommendations
 - **Real-time Processing**: Fast and efficient analysis of user inputs
 - **Secure Authentication**: OAuth2 with JWT token-based authentication
+- **Email Notifications**: Automated email notifications for analysis results
 - **Scalable Architecture**: Built with FastAPI and PostgreSQL
 
 ## Tech Stack
 
 - **Backend**: FastAPI, Python 3.9+
 - **Database**: PostgreSQL
-- **Cache**: Redis
-- **ML Models**: Transformers, PyTorch
-- **Storage**: AWS S3
-- **Deployment**: Docker, Kubernetes (optional)
+- **Authentication**: JWT with OAuth2
+- **ML Models**: Hugging Face Transformers
+- **Email**: SMTP (Gmail)
+- **Frontend Integration**: React (localhost:5173)
 
 ## Prerequisites
 
 - Python 3.9 or higher
 - PostgreSQL 13 or higher
-- Redis 6 or higher
-- FFmpeg
 - Git
+- FFmpeg (for audio/video processing)
 
 ## Installation
 
@@ -57,17 +78,31 @@ pip install -r requirements.txt
 4. **Set up environment variables**
 Create a `.env` file in the root directory with:
 ```env
-DATABASE_URL=postgresql://postgres:password@localhost:5432/mental_health_db
-SECRET_KEY=your-secret-key
+# Database Configuration
+DATABASE_URL=postgresql://postgres:taha@localhost:5432/fastapi_db
+
+# Security Settings
+SECRET_KEY=your-secret-key-here
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=30
-HUGGINGFACE_API_KEY=your-huggingface-api-key
+
+# Email Settings
+SMTP_SERVER=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USERNAME=iamtahakhan3@gmail.com
+SMTP_PASSWORD=wzlg ykkp ycqo efxh
+FROM_EMAIL=iamtahakhan3@gmail.com
+FRONTEND_URL=http://localhost:5173
+
+# API Keys
+HUGGINGFACE_API_KEY=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
+HUGGINGFACE_TOKEN=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
 ```
 
 5. **Initialize the database**
 ```bash
 # Create database
-createdb mental_health_db
+createdb fastapi_db
 
 # Run migrations
 alembic upgrade head
@@ -283,9 +318,23 @@ uvicorn main:app --reload
 }
 ```
 
+## Email Notifications
+
+The system sends email notifications for:
+- Analysis results
+- Account verification
+- Password reset
+- Important updates
+
+## Frontend Integration
+
+The backend is configured to work with a React frontend running on:
+- URL: http://localhost:5173
+- CORS enabled for development
+
 ## Support
 
-For support, email support@example.com or open an issue in the GitHub repository.
+For support, email iamtahakhan3@gmail.com or open an issue in the GitHub repository.
 
 ## License
 
