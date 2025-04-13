@@ -1,241 +1,233 @@
-# Mental Health Analysis API
+# Mental Health Analysis API - User Guide
 
-A comprehensive API for analyzing mental health through text, audio, and video inputs. This system provides sentiment analysis, emotion detection, and personalized mental health recommendations.
+## Introduction
 
-## Features
+Welcome to the Mental Health Analysis API! This guide will help you understand how to use our API to analyze mental health through text, audio, and video inputs. Our API provides personalized insights and recommendations to help you better understand and manage your mental well-being.
 
-- **Text Analysis**: Analyze journal entries and thoughts for sentiment, emotions, and mental health indicators
-- **Audio Analysis**: Process voice recordings for emotional state and speech patterns
-- **Video Analysis**: Analyze facial expressions and voice for comprehensive emotional assessment
-- **Trend Analysis**: Track emotional and mental health trends over time
-- **Personalized Interventions**: Generate customized mental health recommendations
-- **Real-time Processing**: Fast and efficient analysis of user inputs
-- **Secure Authentication**: OAuth2 with JWT token-based authentication
-- **Scalable Architecture**: Built with FastAPI and PostgreSQL
+## Getting Started
 
-## Tech Stack
+### 1. Create an Account
 
-- **Backend**: FastAPI, Python 3.9+
-- **Database**: PostgreSQL
-- **Cache**: Redis
-- **ML Models**: Transformers, PyTorch
-- **Storage**: AWS S3
-- **Deployment**: Docker, Kubernetes (optional)
-
-## Prerequisites
-
-- Python 3.9 or higher
-- PostgreSQL 13 or higher
-- Redis 6 or higher
-- FFmpeg
-- AWS Account (for S3 storage)
-
-## Installation
-
-1. **Clone the repository**
-```bash
-git clone https://github.com/yourusername/mental-health-analysis-api.git
-cd mental-health-analysis-api
-```
-
-2. **Create and activate virtual environment**
-```bash
-# Windows
-python -m venv venv
-venv\Scripts\activate
-
-# Linux/Mac
-python3 -m venv venv
-source venv/bin/activate
-```
-
-3. **Install system dependencies**
-```bash
-# Ubuntu/Debian
-sudo apt-get update
-sudo apt-get install -y \
-    ffmpeg \
-    libsndfile1 \
-    libportaudio2 \
-    portaudio19-dev \
-    python3-dev \
-    build-essential \
-    libpq-dev \
-    redis-server \
-    postgresql \
-    postgresql-contrib
-
-# Windows (using Chocolatey)
-choco install ffmpeg
-choco install redis-64
-choco install postgresql
-```
-
-4. **Install Python dependencies**
-```bash
-pip install --upgrade pip
-pip install -r requirements.txt
-```
-
-5. **Set up environment variables**
-```bash
-# Copy the example environment file
-cp .env.example .env
-
-# Edit .env with your configuration
-nano .env
-```
-
-6. **Initialize the database**
-```bash
-# Create database
-createdb mental_health_db
-
-# Run migrations
-alembic upgrade head
-```
-
-7. **Download required models**
-```bash
-python -m spacy download en_core_web_sm
-python -m nltk.downloader punkt
-python -m nltk.downloader averaged_perceptron_tagger
-python -m nltk.downloader wordnet
-```
-
-## Configuration
-
-### Environment Variables
-
-Create a `.env` file with the following variables:
-
-```env
-# Database
-DATABASE_URL=postgresql://user:password@localhost:5432/mental_health_db
-REDIS_URL=redis://localhost:6379/0
-
-# Security
-SECRET_KEY=your-secret-key
-ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=30
-
-# API Keys
-HUGGINGFACE_API_KEY=your-huggingface-api-key
-OPENAI_API_KEY=your-openai-api-key
-
-# AWS Configuration
-AWS_ACCESS_KEY_ID=your-aws-access-key
-AWS_SECRET_ACCESS_KEY=your-aws-secret-key
-AWS_REGION=your-aws-region
-S3_BUCKET_NAME=your-bucket-name
-
-# Application Settings
-MAX_FILE_SIZE=10485760  # 10MB in bytes
-MAX_VIDEO_DURATION=300  # 5 minutes in seconds
-MAX_AUDIO_DURATION=600  # 10 minutes in seconds
-RATE_LIMIT_REQUESTS=100
-RATE_LIMIT_PERIOD=60
-```
-
-## Running the Application
-
-### Development
+First, you'll need to create an account to use the API:
 
 ```bash
-# Start the development server
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
+# Sign up
+curl -X POST "https://api.example.com/signup" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "your.email@example.com",
+    "full_name": "Your Name",
+    "password": "your_secure_password"
+  }'
 ```
 
-### Production
+### 2. Login and Get Access Token
+
+After signing up, you'll need to login to get your access token:
 
 ```bash
-# Build the Docker image
-docker build -t mental-health-api .
-
-# Run the container
-docker run -d \
-  --name mental-health-api \
-  -p 8000:8000 \
-  --env-file .env \
-  mental-health-api
+# Login
+curl -X POST "https://api.example.com/login" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "your.email@example.com",
+    "password": "your_secure_password"
+  }'
 ```
 
-## API Documentation
+The response will include your access token. Use this token in all subsequent API requests.
 
-Once the server is running, visit:
-- Swagger UI: `http://localhost:8000/docs`
-- ReDoc: `http://localhost:8000/redoc`
+## Using the API
 
-## Testing
+### Text Analysis
+
+Analyze your thoughts and feelings through text:
 
 ```bash
-# Run all tests
-pytest
-
-# Run tests with coverage
-pytest --cov=app tests/
-
-# Run specific test file
-pytest tests/test_analysis.py
+# Analyze text
+curl -X POST "https://api.example.com/mental-health/analyze/text" \
+  -H "Authorization: Bearer your_access_token" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content": "I've been feeling stressed at work lately. The deadlines are piling up and I'm having trouble sleeping.",
+    "context": "Evening reflection"
+  }'
 ```
 
-## Deployment
+The response will include:
+- Sentiment analysis
+- Emotional state
+- Key themes
+- Personalized recommendations
+- Follow-up questions
 
-### Docker Deployment
+### Audio Analysis
 
-1. **Build the image**
+Analyze your emotional state through voice recordings:
+
 ```bash
-docker build -t mental-health-api .
+# Analyze audio
+curl -X POST "https://api.example.com/mental-health/analyze/audio" \
+  -H "Authorization: Bearer your_access_token" \
+  -F "audio=@your_recording.wav"
 ```
 
-2. **Run the container**
+The response will include:
+- Voice analysis
+- Emotional state
+- Speech patterns
+- Stress indicators
+- Personalized recommendations
+
+### Video Analysis
+
+Analyze your emotional state through video:
+
 ```bash
-docker run -d \
-  --name mental-health-api \
-  -p 8000:8000 \
-  --env-file .env \
-  mental-health-api
+# Analyze video
+curl -X POST "https://api.example.com/mental-health/analyze/video" \
+  -H "Authorization: Bearer your_access_token" \
+  -F "video=@your_video.mp4"
 ```
 
-### Kubernetes Deployment
+The response will include:
+- Facial expression analysis
+- Voice analysis
+- Overall emotional state
+- Personalized recommendations
 
-1. **Create namespace**
+### View Your Trends
+
+Track your mental health over time:
+
 ```bash
-kubectl create namespace mental-health
+# Get emotion trends
+curl -X GET "https://api.example.com/mental-health/trends/emotions/30" \
+  -H "Authorization: Bearer your_access_token"
+
+# Get mental health trends
+curl -X GET "https://api.example.com/mental-health/trends/mental-health/30" \
+  -H "Authorization: Bearer your_access_token"
 ```
 
-2. **Apply configurations**
-```bash
-kubectl apply -f k8s/
+## Understanding the Results
+
+### Text Analysis Results
+
+```json
+{
+  "sentiment_analysis": {
+    "sentiment": "NEGATIVE",
+    "score": 0.85,
+    "emotions": {
+      "stress": 0.8,
+      "anxiety": 0.6
+    }
+  },
+  "recommendations": [
+    "Practice deep breathing exercises",
+    "Try time management techniques"
+  ],
+  "follow_up_questions": [
+    "What specific work tasks are causing the most stress?",
+    "How has your sleep been affected?"
+  ]
+}
 ```
 
-## Monitoring
+### Audio Analysis Results
 
-The application includes:
-- Prometheus metrics endpoint
-- Sentry error tracking
-- Structured logging
-- Health check endpoint
+```json
+{
+  "emotion_analysis": {
+    "dominant_emotion": "stressed",
+    "confidence": 0.82,
+    "voice_characteristics": {
+      "pitch": "higher than normal",
+      "speech_rate": "faster than normal"
+    }
+  },
+  "recommendations": [
+    "Try progressive muscle relaxation",
+    "Practice mindfulness meditation"
+  ]
+}
+```
 
-## Contributing
+### Video Analysis Results
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+```json
+{
+  "facial_analysis": {
+    "emotions": {
+      "stress": 0.7,
+      "tension": 0.6
+    }
+  },
+  "recommendations": [
+    "Take regular breaks during work",
+    "Practice facial relaxation exercises"
+  ]
+}
+```
 
-## License
+## Best Practices
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+1. **Regular Analysis**
+   - Perform text analysis daily
+   - Record audio weekly
+   - Video analysis monthly
+
+2. **Privacy**
+   - Your data is encrypted and secure
+   - You can delete your data at any time
+   - We never share your data with third parties
+
+3. **Getting the Best Results**
+   - Be honest in your text entries
+   - Record in a quiet environment
+   - Ensure good lighting for video analysis
+   - Use consistent recording times
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Authentication Errors**
+   - Check your access token
+   - Ensure token hasn't expired
+   - Verify your credentials
+
+2. **File Upload Issues**
+   - Check file size (max 10MB)
+   - Verify file format
+   - Ensure stable internet connection
+
+3. **Analysis Errors**
+   - Check input quality
+   - Ensure sufficient content
+   - Try again later
 
 ## Support
 
-For support, email support@example.com or open an issue in the GitHub repository.
+If you need help:
+1. Check our [FAQ](https://example.com/faq)
+2. Email support@example.com
+3. Visit our [documentation](https://example.com/docs)
 
-## Acknowledgments
+## Privacy and Security
 
-- FastAPI team for the amazing framework
-- Hugging Face for the transformer models
-- OpenCV for computer vision capabilities
-- All contributors and maintainers 
+- All data is encrypted
+- Your privacy is our priority
+- You control your data
+- Regular security audits
+- GDPR compliant
+
+## Feedback
+
+We value your feedback! Help us improve by:
+1. Reporting issues
+2. Suggesting features
+3. Sharing your experience
+
+Email: feedback@example.com 
